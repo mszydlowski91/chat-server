@@ -1,16 +1,16 @@
 
-import * as express from 'express';
 import { WebSocket } from './src/WebSocket';
 import * as app from 'express';
 
+import * as User from './src/User';
+
 const port = 3000;
 
-const http = require('http').Server(app);
+const httpServer = require('http').Server(app);
 
-(new WebSocket()).createWSServer(http);
+(new WebSocket(httpServer)).createWSServer();
 
-http.listen(port, '0.0.0.0', () => console.log('Server running on: ' + port));
-
+httpServer.listen(port, '0.0.0.0', () => console.log('Server running on: ' + port));
 
 
 

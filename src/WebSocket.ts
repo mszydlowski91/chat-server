@@ -1,23 +1,25 @@
 
 import * as socketio from 'socket.io';
-
+import { Server } from 'http';
 import { User } from './User';
 import { Message } from './Message';
 import * as _ from 'lodash';
 
 export class WebSocket {
 
+    private server: Server;
     private messages: Message[];
     private users: User[];
 
-    constructor() {
+    constructor(server: Server) {
+        this.server = server;
         this.messages = [];
         this.users = [];
     }
 
-    createWSServer(httpServer: any) {
+    createWSServer() {
 
-        const io = socketio(httpServer);
+        const io = socketio(this.server);
 
         io.on('connection', (socket) => {
             socket.emit('user list', _.map(this.users, 'name'));
@@ -41,7 +43,6 @@ export class WebSocket {
                 if (authorUser) {
                     message.author = authorUser.name;
                 }
-                console.log(message);
                 io.emit('chat message', message);
                 this.messages.push(new Message(message.type, message.text, message.author));
             });
